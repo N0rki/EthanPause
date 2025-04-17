@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            padding: 15px;
+            width: 220px;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        label {
+            font-size: 14px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input[type="number"] {
+            width: 80px;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 6px 12px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+            button:hover {
+                background-color: #45a049;
+            }
+
+        #status {
+            font-size: 13px;
+            margin-top: 10px;
+            color: #1e7e34;
+        }
+    </style>
+</head>
+<body>
+    <h1>YouTube Pause Limiter</h1>
+
+    <label for="cooldown">Pause cooldown (seconds)</label>
+    <div>
+        <input type="number" id="cooldown" min="0" value="20" />
+        <button id="save">Save</button>
+    </div>
+
+    <p id="status"></p>
+
+    <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+    "manifest_version": 3,
+    "name": "YouTube Pause Limiter",
+    "version": "1.0",
+    "description": "Restrict pausing on YouTube with a cooldown.",
+    "permissions": [ "storage" ],
+    "host_permissions": [ "*://www.youtube.com/*" ],
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": [ "*://www.youtube.com/*" ],
+            "js": [ "content.js" ]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [ "waggingFinger.gif" ],
+            "matches": [ "<all_urls>" ]
+        }
+    ]
+}
