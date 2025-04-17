@@ -4,6 +4,7 @@ let overlay = null;
 let countdownInterval = null;
 let currentVideo = null;
 let suppressPlayTimestamp = false;
+let selectedGif = "waggingFinger";
 
 function setupOverlay() {
     if (!overlay) {
@@ -29,10 +30,9 @@ function setupOverlay() {
 }
 
 function showEthanWarning() {
-    let warning = document.getElementById("ethan-warning");
-    if (warning) return;
+    if (document.getElementById("ethan-warning")) return;
 
-    warning = document.createElement("div");
+    const warning = document.createElement("div");
     warning.id = "ethan-warning";
     Object.assign(warning.style, {
         position: "fixed",
@@ -52,19 +52,18 @@ function showEthanWarning() {
     });
 
     const img = document.createElement("img");
-    img.src = chrome.runtime.getURL("waggingFinger.gif");
-    img.alt = "Wagging Finger";
+    img.src = chrome.runtime.getURL(`${selectedGif}.gif`);
+    img.alt = "Warning Finger";
     img.style.width = "48px";
     img.style.height = "48px";
 
     const text = document.createElement("span");
-    text.textContent = "Not yet Ethan.";
+    text.textContent = "Not yet, Ethan.";
     text.style.fontSize = "24px";
     text.style.fontWeight = "bold";
 
     warning.appendChild(img);
     warning.appendChild(text);
-
     document.body.appendChild(warning);
 
     setTimeout(() => {
@@ -154,34 +153,42 @@ function waitForVideoAfterCooldownLoad() {
 }
 
 function loadCooldownAndRun() {
-    chrome.storage.sync.get(["cooldown"], (data) => {
+    chrome.storage.sync.get(["cooldown", "warningGif"], (data) => {
         cooldown = typeof data.cooldown === "number" ? data.cooldown * 1000 : 0;
+        selectedGif = data.warningGif || "waggingFinger";
         waitForVideoAfterCooldownLoad();
     });
 }
 
+
 chrome.storage.onChanged.addListener((changes, areaName) => {
-    if (areaName === "sync" && changes.cooldown) {
-        const newVal = changes.cooldown.newValue;
-        if (typeof newVal === "number") {
-            cooldown = newVal * 1000;
-            console.log(`[Limiter] Cooldown updated to ${cooldown}ms`);
+    if (areaName === "sync") {
+        if (changes.cooldown) {
+            const newVal = changes.cooldown.newValue;
+            if (typeof newVal === "number") {
+                cooldown = newVal * 1000;
+                const now = Date.now();
+                const timeSinceLastPause = now - lastPauseTime;
+                const remaining = Math.max(0, cooldown - timeSinceLastPause);
 
-            const now = Date.now();
-            const timeSinceLastPause = now - lastPauseTime;
-            const remaining = Math.max(0, cooldown - timeSinceLastPause);
-
-            if (cooldown === 0) {
-                removeOverlay();
-            } else if (remaining > 0) {
-                startCountdown();
-            } else {
-                if (overlay) overlay.style.display = "none";
-                clearInterval(countdownInterval);
+                if (cooldown === 0) {
+                    removeOverlay();
+                } else if (remaining > 0) {
+                    startCountdown();
+                } else {
+                    if (overlay) overlay.style.display = "none";
+                    clearInterval(countdownInterval);
+                }
             }
+        }
+
+        if (changes.warningGif) {
+            selectedGif = changes.warningGif.newValue;
+            console.log(`[Limiter] Warning GIF changed to: ${selectedGif}`);
         }
     }
 });
+
 
 let lastUrl = location.href;
 new MutationObserver(() => {

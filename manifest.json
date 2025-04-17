@@ -27,7 +27,11 @@
     ],
     "web_accessible_resources": [
         {
-            "resources": [ "waggingFinger.gif" ],
+            "resources": [
+                "waggingFinger.gif",
+                "DanWaggingFinger.gif",
+                "RageDanWaggingFinger.gif"
+            ],
             "matches": [ "<all_urls>" ]
         }
     ]
