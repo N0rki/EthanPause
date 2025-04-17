@@ -6,8 +6,19 @@
     "permissions": [ "storage" ],
     "host_permissions": [ "*://www.youtube.com/*" ],
     "action": {
-        "default_popup": "popup.html"
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "icon.png",
+            "48": "icon.png",
+            "128": "icon.png"
+        }
     },
+    "icons": {
+        "16": "icon.png",
+        "48": "icon.png",
+        "128": "icon.png"
+    },
+
     "content_scripts": [
         {
             "matches": [ "*://www.youtube.com/*" ],
